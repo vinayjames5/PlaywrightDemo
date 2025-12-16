@@ -1,18 +1,25 @@
 import { test, expect } from '@playwright/test';
+import LoginPage from '../pages/loginPage';
+import ProductsPage from '../pages/productsPage';
+import NavMenu from '../pages/navMenu';
 
-test('has title', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+test.describe(
+  'Sauce Demo E2E Test Suite', () => {
 
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/Playwright/);
-});
 
-test('get started link', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+  test('Test Sauce Demo Login', async ({ page }) => {
+    const loginPage = new LoginPage(page);
+    await loginPage.goto();
+    await loginPage.login('standard_user', 'secret_sauce');
 
-  // Click the get started link.
-  await page.getByRole('link', { name: 'Get started' }).click();
+    const productsPage = new ProductsPage(page);
+    await productsPage.verifyPageTitle(); 
 
-  // Expects page to have a heading with the name of Installation.
-  await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
-});
+    const navMenu = new NavMenu(page);
+    await navMenu.openMenu();
+    await navMenu.clickLogout();
+
+  });
+
+}
+)
