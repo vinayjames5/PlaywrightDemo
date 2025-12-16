@@ -28,6 +28,12 @@ export class LoginPage {
         await this.fillCredentials(email, password);
         await this.submit();
     }   
+
+    public async verifyLoginNotSuccessful() {
+        await expect(this.$emailInput).toBeVisible();
+        await expect(this.$passwordInput).toBeVisible();
+        await expect(this.$signInButton).toBeVisible();
+    }
 }
 
 export default LoginPage;   
