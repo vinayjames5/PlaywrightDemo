@@ -1,4 +1,10 @@
 import { defineConfig, devices } from '@playwright/test';
+import * as path from 'path'; 
+import * as dotenv from 'dotenv';
+
+// Load environment variables from .env file
+dotenv.config({ path: path.resolve(__dirname, '.env') }); 
+
 
 /**
  * Read environment variables from file.
@@ -12,6 +18,7 @@ import { defineConfig, devices } from '@playwright/test';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
+  globalSetup: './global-setup',
   testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -30,24 +37,38 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+    storageState: "./auth.json",
   },
 
   /* Configure projects for major browsers */
   projects: [
     {
+      name: 'behind-login',
+      use: { ...devices['Desktop Chrome'],
+      storageState: "./auth.json",
+       },
+       testMatch: /.*\.logedIn\.ts/,
+    },
+    {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+      testMatch: /.*\.ts/,
+      testIgnore: /.*\.logedIn\.ts/,
     },
 
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
+    // {
+    //   name: 'firefox',
+    //   use: { ...devices['Desktop Firefox'] },
+    //   testMatch: /.*\.ts/,
+    //   testIgnore: /.*\.logedIn\.ts/,
+    // },
 
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
+    // {
+    //   name: 'webkit',
+    //   use: { ...devices['Desktop Safari'] },
+    //   testMatch: /.*\.ts/,
+    //   testIgnore: /.*\.logedIn\.ts/,
+    // },
 
     /* Test against mobile viewports. */
     // {
